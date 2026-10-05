@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>BIRA: Sign Quest — Petualangan Isyarat</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
+  body, html {
+    width: 100%; height: 100%; overflow: hidden;
+    background: #e8f5e9; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    color: #2e3d30;
+  }
+
+  #app {
+    display: flex; flex-direction: column; width: 100vw; height: 100vh;
+    max-width: 500px; margin: 0 auto; background: #ffffff;
+    box-shadow: 0 0 25px rgba(0,0,0,0.08); position: relative;
+  }
+
+  /* Header Progress */
+  #header {
+    padding: 14px 18px; display: flex; justify-content: space-between; align-items: center;
+    background: #2e7d32; color: #fff; font-weight: 800; font-size: 15px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15); z-index: 10;
+  }
+  .star-badge { background: #1b5e20; padding: 5px 12px; border-radius: 20px; font-size: 13px; color: #ffeb3b; }
+
+  /* Scene & Karakter */
+  #scene {
+    flex: 1; background: linear-gradient(180deg, #c8e6c9 0%, #a5d6a7 70%, #81c784 100%);
+    position: relative; display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+    padding-bottom: 20px; overflow: hidden;
+  }
+
+  /* Balon Isyarat Karakter NPC */
+  #speech-bubble {
+    position: absolute; top: 20px; left: 16px; right: 16px;
+    background: #ffffff; border-radius: 20px; padding: 16px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12); border: 2.5px solid #43a047;
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  #bubble-npc-name { font-size: 13px; font-weight: 800; color: #2e7d32; text-transform: uppercase; margin-bottom: 4px; }
+  #bubble-text { font-size: 15px; font-weight: 700; color: #333; margin-bottom: 10px; }
+  #sign-illustration-box {
+    width: 110px; height: 110px; background: #f1f8e9; border-radius: 16px;
+    border: 2px dashed #81c784; display: flex; align-items: center; justify-content: center;
+    margin-bottom: 8px;
+  }
+  #bubble-meaning { font-size: 12px; color: #666; font-style: italic; background: #e8f5e9; padding: 4px 10px; border-radius: 12px; }
+
+  /* Visual Karakter NPC */
+  #character-stage {
+    width: 140px; height: 170px; display: flex; justify-content: center; align-items: flex-end;
+    position: relative; margin-bottom: 10px;
+  }
+  .npc-avatar { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 6px 10px rgba(0,0,0,0.15)); }
+
+  /* Pilihan Dialog Isyarat */
+  #dialog-panel {
+    background: #ffffff; border-top-left-radius: 24px; border-top-right-radius: 24px;
+    padding: 18px 16px max(18px, env(safe-area-inset-bottom));
+    box-shadow: 0 -4px 15px rgba(0,0,0,0.06); display: flex; flex-direction: column; gap: 10px;
+  }
+  .prompt-label { font-size: 13px; font-weight: 800; color: #555; margin-bottom: 2px; text-align: center; }
+
+  .choice-btn {
+    display: flex; align-items: center; gap: 14px;
+    padding: 10px 14px; background: #f9fbf9; border: 2px solid #c8e6c9; border-radius: 16px;
+    cursor: pointer; transition: all 0.15s ease; text-align: left;
+  }
+  .choice-btn:active { transform: scale(0.97); background: #e8f5e9; border-color: #4caf50; }
+  .choice-icon {
+    width: 50px; height: 50px; background: #ffffff; border-radius: 12px;
+    border: 1.5px solid #a5d6a7; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .choice-text { flex: 1; }
+  .choice-action { font-size: 14px; font-weight: 800; color: #2e7d32; display: block; margin-bottom: 2px; }
+  .choice-desc { font-size: 12px; color: #666; line-height: 1.2; }
+
+  /* Feedback Overlay (Benar/Salah) */
+  #feedback-banner {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+    display: none; justify-content: center; align-items: center; padding: 20px; z-index: 50;
+  }
+  .feedback-card {
+    background: white; border-radius: 24px; padding: 24px 20px; text-align: center;
+    max-width: 320px; width: 100%; box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+  }
+  .feedback-card h3 { font-size: 20px; margin-bottom: 8px; }
+  .feedback-card p { font-size: 14px; color: #555; margin-bottom: 16px; line-height: 1.4; }
+  .feedback-btn {
+    width: 100%; padding: 12px; border-radius: 14px; border: none; font-size: 15px;
+    font-weight: 800; color: white; background: #2e7d32; cursor: pointer;
+  }
+
+  @keyframes popIn {
+    0% { transform: scale(0.85); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <!-- Bar Status -->
+  <div id="header">
+    <div>🌱 BIRA: SIGN QUEST</div>
+    <div class="star-badge" id="star-count">⭐ 0 Bintang</div>
+  </div>
+
+  <!-- Panggung Cerita & Karakter -->
+  <div id="scene">
+    <!-- Balon Percakapan Isyarat NPC -->
+    <div id="speech-bubble">
+      <div id="bubble-npc-name">Kakek Ranting</div>
+      <div id="bubble-text">"Halo anak muda, senang bertemu denganmu!"</div>
+      <div id="sign-illustration-box">
+        <svg id="npc-sign-svg" width="80" height="80" viewBox="0 0 100 100"></svg>
+      </div>
+      <div id="bubble-meaning">Gerakan: Melambaikan tangan & tersenyum (Halo)</div>
+    </div>
+
+    <!-- Karakter NPC yang Sedang Ditemui -->
+    <div id="character-stage">
+      <svg id="npc-avatar-svg" width="130" height="150" viewBox="0 0 130 150"></svg>
+    </div>
+  </div>
+
+  <!-- Panel Pilihan Isyarat Balasan -->
+  <div id="dialog-panel">
+    <div class="prompt-label">Pilih respon isyarat tangan yang tepat:</div>
+    <div id="options-container"></div>
+  </div>
+</div>
+
+<!-- Modal Penjelasan Edukasi -->
+<div id="feedback-banner">
+  <div class="feedback-card">
+    <h3 id="feedback-title">Hebat Sekali! 🎉</h3>
+    <div id="feedback-svg-box" style="margin: 10px auto; width: 70px; height: 70px;"></div>
+    <p id="feedback-desc">Kamu membalas salam dengan isyarat tangan yang santun.</p>
+    <button class="feedback-btn" onclick="nextQuestion()">LANJUTKAN</button>
+  </div>
+</div>
+
+<script>
+// --- Bank Data Ilustrasi Vector Tangan BISINDO ---
+const signSVGs = {
+  // Isyarat Halo (Tangan terbuka melambai)
+  halo: `<path d="M50,75 C45,75 42,65 42,50 C42,42 45,35 48,35 C50,35 52,40 52,46 M52,46 C52,38 55,30 58,30 C60,30 62,36 62,44 M62,44 C62,39 65,33 68,33 C70,33 72,39 72,46 M72,46 C72,42 74,38 76,38 C78,38 80,42 80,50 C80,68 70,75 50,75 Z" fill="#ffcc80" stroke="#d87a22" stroke-width="3"/><path d="M38,58 C38,50 42,46 45,46" fill="none" stroke="#d87a22" stroke-width="3"/>`,
+  
+  // Isyarat Terima Kasih (Tangan menyentuh dagu lalu diarahkan ke depan)
+  terimaKasih: `<rect x="35" y="45" width="30" height="35" rx="10" fill="#ffcc80" stroke="#d87a22" stroke-width="3"/><path d="M35,55 L25,48 C22,46 25,40 29,42 L35,46" fill="#ffcc80" stroke="#d87a22" stroke-width="3"/><path d="M42,45 L42,32 C42,30 46,30 46,32 L46,45 M50,45 L50,28 C50,26 54,26 54,28 L54,45 M58,45 L58,32 C58,30 62,30 62,32 L62,45" fill="none" stroke="#d87a22" stroke-width="3"/><path d="M20,25 Q35,15 50,25" fill="none" stroke="#2e7d32" stroke-width="3" stroke-dasharray="4,4"/>`,
+  
+  // Isyarat Sama-sama / Senang Membantu (Kedua tangan terbuka menyilang ramah)
+  samaSama: `<ellipse cx="50" cy="55" rx="22" ry="16" fill="#ffcc80" stroke="#d87a22" stroke-width="3"/><path d="M32,55 C32,45 36,36 40,36 C43,36 45,42 45,50 M45,50 C45,42 48,34 52,34 C55,34 57,40 57,48 M57,48 C57,42 60,37 63,37 C66,37 68,43 68,52" fill="none" stroke="#d87a22" stroke-width="3"/>`,
+  
+  // Isyarat Tolong / Minta Bantuan (Satu tangan menangkup tangan lain di dada)
+  tolong: `<rect x="30" y="60" width="40" height="18" rx="8" fill="#ffe0b2" stroke="#d87a22" stroke-width="3"/><rect x="38" y="38" width="24" height="26" rx="8" fill="#ffcc80" stroke="#d87a22" stroke-width="3"/><path d="M42,38 L42,28 M46,38 L46,24 M50,38 L50,24 M54,38 L54,28" fill="none" stroke="#d87a22" stroke-width="3"/><path d="M50,15 L50,22 M45,18 L50,22 L55,18" fill="none" stroke="#e65100" stroke-width="2.5"/>`,
+
+  // Isyarat Maaf (Tangan mengepal memutar di dada dengan rasa tulus)
+  maaf: `<circle cx="50" cy="52" r="18" fill="#ffcc80" stroke="#d87a22" stroke-width="3"/><path d="M42,42 C45,38 52,38 56,42 M38,50 L42,50 M58,50 L62,50" fill="none" stroke="#d87a22" stroke-width="3"/><path d="M25,52 A25,25 0 1,1 52,77" fill="none" stroke="#1565c0" stroke-width="3" stroke-dasharray="4,4"/>`
+};
+
+// --- Alur Cerita Percakapan Bab Desa Bira ---
+const questDialogs = [
+  {
+    npc: "Pak Bambu (Warga Desa)",
+    avatar: "bambu",
+    speech: "Selamat pagi! Cuaca di lembah hari ini sangat cerah ya.",
+    signMeaning: "Menyilangkan tangan dan melambai (Salam Pagi)",
+    signKey: "halo",
+    prompt: "Bagaimana cara membalas sapaan pagi Pak Bambu?",
+    choices: [
+      { key: "halo", action: "Balas Sapaan (Halo / Selamat Pagi)", desc: "Melambaikan tangan dengan ramah dan tersenyum", correct: true },
+      { key: "maaf", action: "Mengepal Tangan Memutar (Maaf)", desc: "Menunjukkan rasa bersalah dan memohon maaf", correct: false }
+    ],
+    hint: "Saat orang lain menyapa dengan ramah, balaslah dengan lambaian isyarat 'Halo/Pagi' yang hangat."
+  },
+  {
+    npc: "Kakek Ranting",
+    avatar: "ranting",
+    speech: "Wah, terima kasih banyak ya Bira sudah membantuku memetik buah!",
+    signMeaning: "Tangan dari dagu mengarah ke depan (Terima Kasih)",
+    signKey: "terimaKasih",
+    prompt: "Kakek mengucapkan terima kasih. Apa balasan yang sopan?",
+    choices: [
+      { key: "tolong", action: "Menangkup Tangan (Tolong)", desc: "Meminta bantuan atau pertolongan", correct: false },
+      { key: "samaSama", action: "Kedua Tangan Terbuka (Sama-sama)", desc: "Menyambut rasa terima kasih dengan ikhlas", correct: true }
+    ],
+    hint: "Gunakan isyarat kedua tangan terbuka di dada sebagai tanda 'Sama-sama / Senang membantu'."
+  },
+  {
+    npc: "Bunga Melati (Teman Tuli)",
+    avatar: "melati",
+    speech: "Bira, keranjangku sangat berat... bisakah kamu membantuku?",
+    signMeaning: "Menangkupkan tangan memohon (Minta Tolong)",
+    signKey: "tolong",
+    prompt: "Melati membutuhkan pertolonganmu. Tunjukkan respon membantumu:",
+    choices: [
+      { key: "samaSama", action: "Mengangguk & Membuka Tangan (Siap)", desc: "Menyatakan kesediaan membantu dengan senang hati", correct: true },
+      { key: "maaf", action: "Memutar Dada (Maaf)", desc: "Menolak karena sedang tidak bisa", correct: false }
+    ],
+    hint: "Saat teman membutuhkan bantuan, buka tanganmu ke depan untuk menyatakan kesiapan menolong."
+  },
+  {
+    npc: "Kancil Kecil",
+    avatar: "kancil",
+    speech: "Aduh, maafkan aku Bira! Aku tidak sengaja menyenggol bungamu.",
+    signMeaning: "Tangan mengepal memutar di dada (Meminta Maaf)",
+    signKey: "maaf",
+    prompt: "Kancil meminta maaf dengan tulus. Bagaimana sikapmu?",
+    choices: [
+      { key: "samaSama", action: "Tangan Terbuka Lembut (Tidak Apa-apa)", desc: "Memaafkan dan memberi tahu bahwa semua baik-baik saja", correct: true },
+      { key: "tolong", action: "Menangkup Tangan (Tolong)", desc: "Meminta bantuan lain", correct: false }
+    ],
+    hint: "Memaafkan ditunjukkan dengan ekspresi wajah tersenyum tenang dan tangan terbuka rileks."
+  }
+];
+
+let currentIndex = 0;
+let stars = 0;
+
+// Render Avatar NPC
+function drawAvatar(type) {
+  const el = document.getElementById("npc-avatar-svg");
+  if (type === "bambu") {
+    el.innerHTML = `
+      <circle cx="65" cy="55" r="32" fill="#8bc34a" stroke="#558b2f" stroke-width="3"/>
+      <ellipse cx="65" cy="115" rx="35" ry="30" fill="#689f38"/>
+      <circle cx="56" cy="50" r="4" fill="#2e7d32"/><circle cx="74" cy="50" r="4" fill="#2e7d32"/>
+      <path d="M58,62 Q65,70 72,62" fill="none" stroke="#2e7d32" stroke-width="3" stroke-linecap="round"/>
+      <path d="M65,23 Q60,8 75,5" fill="none" stroke="#33691e" stroke-width="4"/>
+    `;
+  } else if (type === "ranting") {
+    el.innerHTML = `
+      <rect x="52" y="35" width="26" height="85" rx="8" fill="#8d6e63" stroke="#5d4037" stroke-width="3"/>
+      <circle cx="65" cy="50" r="28" fill="#a1887f" stroke="#5d4037" stroke-width="3"/>
+      <circle cx="58" cy="46" r="3" fill="#3e2723"/><circle cx="72" cy="46" r="3" fill="#3e2723"/>
+      <path d="M58,60 Q65,66 72,60" fill="none" stroke="#3e2723" stroke-width="3"/>
+      <path d="M45,20 L55,35 M85,18 L75,35" stroke="#4e342e" stroke-width="4" stroke-linecap="round"/>
+    `;
+  } else {
+    el.innerHTML = `
+      <circle cx="65" cy="52" r="30" fill="#fff59d" stroke="#fbc02d" stroke-width="3"/>
+      <ellipse cx="65" cy="115" rx="36" ry="28" fill="#fff9c4"/>
+      <circle cx="56" cy="48" r="4" fill="#e65100"/><circle cx="74" cy="48" r="4" fill="#e65100"/>
+      <path d="M58,60 Q65,68 72,60" fill="none" stroke="#e65100" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="65" cy="18" r="10" fill="#ffb74d"/>
+    `;
+  }
+}
+
+function loadStep(idx) {
+  const q = questDialogs[idx];
+  document.getElementById("bubble-npc-name").innerText = q.npc;
+  document.getElementById("bubble-text").innerText = `"${q.speech}"`;
+  document.getElementById("bubble-meaning").innerText = `Gerakan: ${q.signMeaning}`;
+  document.getElementById("npc-sign-svg").innerHTML = signSVGs[q.signKey] || "";
+  drawAvatar(q.avatar);
+
+  const container = document.getElementById("options-container");
+  container.innerHTML = "";
+
+  q.choices.forEach(c => {
+    const btn = document.createElement("div");
+    btn.className = "choice-btn";
+    btn.innerHTML = `
+      <div class="choice-icon">
+        <svg width="38" height="38" viewBox="0 0 100 100">${signSVGs[c.key] || ""}</svg>
+      </div>
+      <div class="choice-text">
+        <span class="choice-action">${c.action}</span>
+        <span class="choice-desc">${c.desc}</span>
+      </div>
+    `;
+    btn.onclick = () => selectChoice(c.correct, q.hint, c.key);
+    container.appendChild(btn);
+  });
+}
+
+function selectChoice(isCorrect, hint, key) {
+  // Haptic feedback untuk HP Android (Getar ramah sensorik Tuli)
+  if (navigator.vibrate) {
+    navigator.vibrate(isCorrect ? [80, 50, 80] : 200);
+  }
+
+  const modal = document.getElementById("feedback-banner");
+  const title = document.getElementById("feedback-title");
+  const desc = document.getElementById("feedback-desc");
+  const svgBox = document.getElementById("feedback-svg-box");
+
+  svgBox.innerHTML = `<svg width="70" height="70" viewBox="0 0 100 100">${signSVGs[key] || ""}</svg>`;
+
+  if (isCorrect) {
+    stars += 1;
+    document.getElementById("star-count").innerText = `⭐ ${stars} Bintang`;
+    title.innerText = "Tepat Sekali! 🌟";
+    title.style.color = "#2e7d32";
+    desc.innerText = "Isyarat tanganmu sangat pas dengan konteks percakapan. Warga desa sangat senang!";
+  } else {
+    title.innerText = "Coba Perhatikan Lagi 🤔";
+    title.style.color = "#d84315";
+    desc.innerText = hint;
+  }
+
+  modal.style.display = "flex";
+}
+
+function nextQuestion() {
+  document.getElementById("feedback-banner").style.display = "none";
+  currentIndex++;
+  if (currentIndex < questDialogs.length) {
+    loadStep(currentIndex);
+  } else {
+    // Tamat / Selesai Bab
+    alert(`🎉 Selamat! Kamu telah menyelesaikan Bab 1 Sign Quest dengan total ${stars} Bintang! Kamu berhasil berkomunikasi secara inklusif.`);
+    currentIndex = 0;
+    stars = 0;
+    document.getElementById("star-count").innerText = `⭐ 0 Bintang`;
+    loadStep(0);
+  }
+}
+
+// Mulai Permainan
+loadStep(0);
+</script>
+</body>
+</html>
