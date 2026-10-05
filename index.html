@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>BIRA: Sign Quest — Petualangan Isyarat</title>
+<title>BIRA: Sign Quest & Kamus Isyarat</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
   
@@ -26,8 +26,11 @@
     margin: 0 auto;
     background: #ffffff;
     box-shadow: 0 0 20px rgba(0,0,0,0.06);
+    position: relative;
+    padding-bottom: 70px; /* Ruang untuk bottom bar */
   }
 
+  /* Header Sticky */
   #header {
     position: sticky;
     top: 0;
@@ -42,8 +45,13 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.12);
     z-index: 30;
   }
-  .star-badge { background: #1b5e20; padding: 5px 12px; border-radius: 20px; font-size: 13px; color: #ffeb3b; }
+  .stage-badge { background: #1b5e20; padding: 5px 12px; border-radius: 20px; font-size: 13px; color: #ffeb3b; }
 
+  /* Tab View Kontainer */
+  .tab-view { display: none; width: 100%; flex-direction: column; }
+  .tab-view.active { display: flex; }
+
+  /* ================== TAB 1: QUEST ================== */
   #scene {
     background: linear-gradient(180deg, #d4edda 0%, #c3e6cb 65%, #a8d5ba 100%);
     display: flex;
@@ -84,7 +92,7 @@
     overflow: hidden;
   }
   .sign-icon-large {
-    font-size: 58px;
+    font-size: 56px;
     line-height: 1;
     display: flex;
     align-items: center;
@@ -115,8 +123,8 @@
   }
 
   #character-stage {
-    width: 100px;
-    height: 100px;
+    width: 90px;
+    height: 90px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -127,15 +135,15 @@
     padding: 16px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    padding-bottom: 35px;
+    gap: 10px;
+    padding-bottom: 20px;
   }
   .prompt-label { font-size: 14px; font-weight: 800; color: #333; text-align: center; margin-bottom: 4px; }
 
   .choice-btn {
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 12px;
     padding: 12px 14px;
     background: #fafdfa;
     border: 2px solid #c8e6c9;
@@ -145,38 +153,145 @@
   }
   .choice-btn:active { background: #e8f5e9; border-color: #4caf50; transform: scale(0.98); }
   
-  /* Kotak Icon Terkunci Rapi di Dalam Frame */
   .choice-icon {
-    width: 64px;
-    height: 64px;
+    width: 58px;
+    height: 58px;
     background: #f1f8e9;
     border-radius: 16px;
     border: 1.5px solid #a5d6a7;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 26px;
+    font-size: 24px;
     flex-shrink: 0;
     overflow: hidden;
     position: relative;
     padding: 2px;
   }
   .choice-text { flex: 1; }
-  .choice-action { font-size: 14px; font-weight: 800; color: #2e7d32; display: block; margin-bottom: 3px; }
-  .choice-desc { font-size: 12px; color: #666; line-height: 1.3; }
+  .choice-action { font-size: 14px; font-weight: 800; color: #2e7d32; display: block; margin-bottom: 2px; }
+  .choice-desc { font-size: 12px; color: #666; line-height: 1.25; }
 
-  #feedback-banner {
+  /* ================== TAB 2: DASHBOARD KAMUS ================== */
+  #dictionary-view {
+    padding: 16px;
+  }
+  .search-box {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 16px;
+    border: 2px solid #c8e6c9;
+    font-size: 14px;
+    outline: none;
+    margin-bottom: 12px;
+    background: #fcfdfc;
+  }
+  .search-box:focus { border-color: #2e7d32; }
+
+  /* Filter Tag */
+  .filter-bar {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .filter-bar::-webkit-scrollbar { display: none; }
+  .filter-chip {
+    padding: 6px 14px;
+    background: #f1f8e9;
+    border: 1.5px solid #c8e6c9;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #2e7d32;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+  .filter-chip.active {
+    background: #2e7d32;
+    color: #fff;
+    border-color: #2e7d32;
+  }
+
+  /* Grid Kamus Kartu */
+  .dict-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  .dict-card {
+    background: #ffffff;
+    border: 2px solid #e0f2f1;
+    border-radius: 18px;
+    padding: 14px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.04);
+    transition: transform 0.15s ease;
+  }
+  .dict-card:active { transform: scale(0.97); border-color: #43a047; }
+  .dict-icon {
+    font-size: 38px;
+    margin-bottom: 6px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .dict-name { font-size: 14px; font-weight: 800; color: #1b5e20; margin-bottom: 2px; }
+  .dict-category { font-size: 10px; font-weight: 700; color: #e65100; background: #fff3e0; padding: 2px 8px; border-radius: 8px; margin-bottom: 4px; }
+  .dict-desc { font-size: 11px; color: #666; line-height: 1.25; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+  /* Bottom Navigation Bar */
+  #bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 480px;
+    height: 62px;
+    background: #ffffff;
+    border-top: 1.5px solid #e0e0e0;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 40;
+    box-shadow: 0 -3px 12px rgba(0,0,0,0.05);
+  }
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    font-size: 11px;
+    font-weight: 800;
+    color: #888;
+    cursor: pointer;
+    width: 50%;
+    padding: 6px 0;
+  }
+  .nav-item.active { color: #2e7d32; }
+  .nav-item svg { width: 22px; height: 22px; stroke: currentColor; fill: none; }
+
+  /* Modal Feedback & Modal Detail Kamus */
+  .modal-overlay {
     position: fixed; inset: 0; background: rgba(0,0,0,0.65); backdrop-filter: blur(4px);
-    display: none; justify-content: center; align-items: center; padding: 20px; z-index: 50;
+    display: none; justify-content: center; align-items: center; padding: 20px; z-index: 60;
   }
-  .feedback-card {
+  .modal-box {
     background: white; border-radius: 24px; padding: 24px 20px; text-align: center;
-    max-width: 320px; width: 100%; box-shadow: 0 15px 30px rgba(0,0,0,0.25);
+    max-width: 330px; width: 100%; box-shadow: 0 15px 30px rgba(0,0,0,0.25);
   }
-  .feedback-card h3 { font-size: 20px; margin-bottom: 6px; }
-  .feedback-icon { font-size: 46px; margin: 10px 0; display: flex; justify-content: center; align-items: center; gap: 4px; }
-  .feedback-card p { font-size: 14px; color: #555; margin-bottom: 16px; line-height: 1.4; }
-  .feedback-btn {
+  .modal-box h3 { font-size: 20px; margin-bottom: 6px; }
+  .modal-icon { font-size: 52px; margin: 10px 0; display: flex; justify-content: center; align-items: center; }
+  .modal-box p { font-size: 14px; color: #555; margin-bottom: 16px; line-height: 1.4; }
+  .modal-btn {
     width: 100%; padding: 13px; border-radius: 16px; border: none; font-size: 15px;
     font-weight: 800; color: white; background: #2e7d32; cursor: pointer;
   }
@@ -186,208 +301,357 @@
 
 <div id="app">
   <div id="header">
-    <div>🌱 BIRA: SIGN QUEST</div>
-    <div class="star-badge" id="star-count">⭐ 0 Bintang</div>
+    <div id="header-title">🌱 BIRA: SIGN QUEST</div>
+    <div class="stage-badge" id="progress-txt">Soal 1 / 10</div>
   </div>
 
-  <div id="scene">
-    <div id="speech-bubble">
-      <div id="bubble-npc-name">Pak Bambu</div>
-      <div id="bubble-text">"Selamat pagi! Senang bertemu denganmu."</div>
-      
-      <div id="sign-card">
-        <div id="sign-icon" class="sign-icon-large">👋</div>
-        <div id="body-pos" class="body-indicator">Posisi: Di Depan Wajah</div>
+  <!-- TAB 1: PETUALANGAN (KUIS PERCAKAPAN) -->
+  <div id="quest-view" class="tab-view active">
+    <div id="scene">
+      <div id="speech-bubble">
+        <div id="bubble-npc-name">Nama NPC</div>
+        <div id="bubble-text">"Teks Percakapan"</div>
+        
+        <div id="sign-card">
+          <div id="sign-icon" class="sign-icon-large">👋</div>
+          <div id="body-pos" class="body-indicator">Posisi Tubuh</div>
+        </div>
+        
+        <div id="bubble-meaning">Gerakan</div>
       </div>
-      
-      <div id="bubble-meaning">Gerakan: Melambaikan tangan terbuka (Halo)</div>
+
+      <div id="character-stage">
+        <svg id="npc-avatar-svg" width="85" height="85" viewBox="0 0 120 120"></svg>
+      </div>
     </div>
 
-    <div id="character-stage">
-      <svg id="npc-avatar-svg" width="90" height="90" viewBox="0 0 120 120"></svg>
+    <div id="dialog-panel">
+      <div class="prompt-label">Pilih respon isyarat tangan yang tepat:</div>
+      <div id="options-container"></div>
     </div>
   </div>
 
-  <div id="dialog-panel">
-    <div class="prompt-label">Pilih respon isyarat tangan yang tepat:</div>
-    <div id="options-container"></div>
+  <!-- TAB 2: DASHBOARD KAMUS BAHASA ISYARAT -->
+  <div id="dictionary-view" class="tab-view">
+    <input type="text" id="dict-search" class="search-box" placeholder="🔍 Cari kata isyarat (misal: Halo, Maaf)..." oninput="filterDictionary()">
+    
+    <div class="filter-bar">
+      <div class="filter-chip active" onclick="setCategory('all', this)">Semua</div>
+      <div class="filter-chip" onclick="setCategory('salam', this)">Salam & Sopan</div>
+      <div class="filter-chip" onclick="setCategory('emosi', this)">Emosi & Perasaan</div>
+      <div class="filter-chip" onclick="setCategory('harian', this)">Kegiatan Harian</div>
+    </div>
+
+    <div class="dict-grid" id="dict-grid-container"></div>
+  </div>
+
+  <!-- BOTTOM NAVIGATION -->
+  <div id="bottom-nav">
+    <div class="nav-item active" id="nav-quest" onclick="switchTab('quest')">
+      <svg viewBox="0 0 24 24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+      </svg>
+      <span>Petualangan</span>
+    </div>
+    <div class="nav-item" id="nav-dict" onclick="switchTab('dict')">
+      <svg viewBox="0 0 24 24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"/>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <span>Kamus Isyarat</span>
+    </div>
   </div>
 </div>
 
-<div id="feedback-banner">
-  <div class="feedback-card">
+<!-- Modal Feedback Kuis -->
+<div id="feedback-banner" class="modal-overlay">
+  <div class="modal-box">
     <h3 id="feedback-title">Tepat Sekali! 🌟</h3>
-    <div id="feedback-icon" class="feedback-icon">👋</div>
-    <p id="feedback-desc">Kamu membalas sapaan dengan benar.</p>
-    <button class="feedback-btn" onclick="nextQuestion()">LANJUTKAN</button>
+    <div id="feedback-icon" class="modal-icon">👋</div>
+    <p id="feedback-desc">Penjelasan</p>
+    <button class="modal-btn" onclick="nextQuestion()">LANJUTKAN</button>
+  </div>
+</div>
+
+<!-- Modal Detail Kamus -->
+<div id="dict-modal" class="modal-overlay">
+  <div class="modal-box">
+    <h3 id="dict-modal-title">Nama Kata</h3>
+    <div id="dict-modal-icon" class="modal-icon">👋</div>
+    <p id="dict-modal-body" style="font-weight:700; color:#2e7d32; margin-bottom:6px;"></p>
+    <p id="dict-modal-desc"></p>
+    <button class="modal-btn" onclick="closeDictModal()">MENGERTI</button>
   </div>
 </div>
 
 <script>
-// Data HTML icon yang terstruktur rapi agar tidak meluap keluar kotak
-const signCatalog = {
-  halo: {
-    html: `<span>👋</span>`,
-    body: "Depan Wajah",
-    meaning: "Melambaikan 5 jari terbuka (Halo / Salam)"
-  },
-  maaf: {
-    // Icon kepalan tangan dengan aksen panah rotasi SVG mini di dalamnya
-    html: `<span style="display:inline-flex; align-items:center; justify-content:center; gap:2px;">
-             <span>✊</span>
-             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1976d2" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-               <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-1.19"/>
-             </svg>
-           </span>`,
-    body: "Di Depan Dada",
-    meaning: "Mengepalkan tangan memutar di dada (Minta Maaf)"
-  },
-  terimaKasih: {
-    html: `<span style="display:inline-flex; align-items:center; justify-content:center; gap:2px;">
-             <span>🫲</span>
-             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2e7d32" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-               <line x1="5" y1="12" x2="19" y2="12"></line>
-               <polyline points="12 5 19 12 12 19"></polyline>
-             </svg>
-           </span>`,
-    body: "Dagu ke Depan",
-    meaning: "Ujung jari menyentuh dagu lalu diarahkan maju (Terima Kasih)"
-  },
-  samaSama: {
-    html: `<span>🤲</span>`,
-    body: "Dua Tangan Terbuka",
-    meaning: "Membuka kedua telapak tangan ke atas (Sama-sama / Lapang Dada)"
-  },
-  tolong: {
-    html: `<span>🙏</span>`,
-    body: "Depan Dada",
-    meaning: "Menangkupkan kedua telapak tangan rapat (Meminta Tolong)"
-  }
-};
+// Data Bank Kamus Bahasa Isyarat Lengkap
+const dictionaryData = [
+  { id: "halo", name: "Halo / Salam", cat: "salam", icon: "👋", body: "Di Depan Wajah", desc: "Buka 5 jari telapak tangan menghadap depan, lalu lambaikan dengan hangat." },
+  { id: "terimaKasih", name: "Terima Kasih", cat: "salam", icon: "🫲➡️", body: "Dagu ke Depan", desc: "Sentuhkan ujung-ujung jari ke dagu, kemudian arahkan telapak tangan maju ke depan." },
+  { id: "samaSama", name: "Sama-sama", cat: "salam", icon: "🤲", body: "Dua Tangan Terbuka", desc: "Buka kedua telapak tangan menghadap ke atas di depan dada tanda menyambut ramah." },
+  { id: "maaf", name: "Minta Maaf", cat: "salam", icon: "✊🔄", body: "Di Dada", desc: "Kepalkan tangan rapat, tempelkan di dada lalu putar perlahan tanda penyesalan tulus." },
+  { id: "tolong", name: "Minta Tolong", cat: "salam", icon: "🙏", body: "Di Depan Dada", desc: "Tangkupkan kedua telapak tangan secara vertikal di depan dada seperti memohon." },
+  { id: "iya", name: "Iya / Setuju", cat: "salam", icon: "👍", body: "Depan Dada", desc: "Acungkan ibu jari ke atas disertai anggukan kepala mantap." },
+  { id: "tidak", name: "Tidak / Bukan", cat: "salam", icon: "☝️↔️", body: "Depan Wajah", desc: "Acungkan satu jari telunjuk lalu goyangkan ke kiri dan ke kanan." },
+  { id: "senang", name: "Senang / Gembira", cat: "emosi", icon: "🥰🖐️", body: "Dada Terbuka", desc: "Usapkan kedua telapak tangan ke dada ke arah atas dengan ekspresi tersenyum lebar." },
+  { id: "semangat", name: "Semangat", cat: "emosi", icon: "💪", body: "Lengan Diangkat", desc: "Kepalkan kedua tangan dan angkat setinggi bahu dengan ekspresi antusias." },
+  { id: "sampaiJumpa", name: "Sampai Jumpa", cat: "salam", icon: "🙋‍♂️", body: "Diangkat Tinggi", desc: "Angkat satu tangan tinggi-tinggi dan lambaikan ke samping saat berpisah." },
+  { id: "makan", name: "Makan", cat: "harian", icon: "🍽️", body: "Di Depan Mulut", desc: "Kuncupkan ujung jari-jari tangan lalu gerakkan mendekati mulut dua kali." },
+  { id: "minum", name: "Minum", cat: "harian", icon: "🥤", body: "Di Depan Mulut", desc: "Bentuk tangan seperti memegang gelas lalu miringkan ke arah mulut seperti sedang minum." },
+  { id: "belajar", name: "Belajar", cat: "harian", icon: "📖", body: "Depan Dada & Dahi", desc: "Buka satu telapak tangan seperti buku, ambil informasi dengan tangan lain lalu sentuh dahi." },
+  { id: "teman", name: "Teman / Sahabat", cat: "salam", icon: "🤝", body: "Depan Dada", desc: "Kaitkan jari telunjuk kedua tangan satu sama lain tanda ikatan persahabatan." }
+];
 
+// 10 Soal Petualangan Sign Quest
 const questDialogs = [
   {
     npc: "Pak Bambu (Warga Desa)",
-    speech: "Selamat pagi! Cuaca di lembah hari ini sangat cerah ya.",
+    speech: "Selamat pagi Bira! Senang bertemu denganmu di jalan desa.",
     signKey: "halo",
     choices: [
-      { key: "halo", action: "Balas Sapaan (Halo / Selamat Pagi)", desc: "Melambaikan 5 jari tangan terbuka dengan ramah", correct: true },
-      { key: "maaf", action: "Kepalan Tangan Memutar (Maaf)", desc: "Menunjukkan rasa bersalah dan memohon maaf", correct: false }
+      { key: "halo", action: "Balas Sapaan (Halo / Selamat Pagi)", desc: "Melambaikan 5 jari tangan terbuka", correct: true },
+      { key: "tidak", action: "Menggelengkan Telunjuk (Tidak)", desc: "Menolak interaksi", correct: false },
+      { key: "maaf", action: "Kepalan Tangan di Dada (Maaf)", desc: "Meminta maaf tanpa sebab", correct: false }
     ],
-    hint: "Saat disapa dengan ramah, balaslah dengan lambaian tangan terbuka (👋)."
+    hint: "Balaslah salam dengan lambaian tangan terbuka ramah (Halo)."
   },
   {
     npc: "Kakek Ranting",
-    speech: "Wah, terima kasih banyak ya Bira sudah membantuku memetik buah!",
+    speech: "Terima kasih banyak ya Bira sudah membantuku memetik buah apel!",
     signKey: "terimaKasih",
     choices: [
-      { key: "tolong", action: "Menangkupkan Dua Telapak (Tolong)", desc: "Meminta bantuan orang lain", correct: false },
-      { key: "samaSama", action: "Kedua Telapak Terbuka (Sama-sama)", desc: "Menyambut ucapan terima kasih dengan ikhlas", correct: true }
+      { key: "tolong", action: "Menangkupkan Tangan (Tolong)", desc: "Meminta bantuan orang lain", correct: false },
+      { key: "samaSama", action: "Kedua Telapak Terbuka (Sama-sama)", desc: "Menyambut rasa terima kasih dengan ikhlas", correct: true },
+      { key: "tidak", action: "Menggoyangkan Jari (Bukan)", desc: "Menampik ucapan kakek", correct: false }
     ],
-    hint: "Buka kedua telapak tangan menghadap ke atas (🤲) sebagai tanda 'Sama-sama'."
+    hint: "Gunakan kedua tangan terbuka ke atas sebagai tanda 'Sama-sama'."
   },
   {
     npc: "Bunga Melati (Teman Tuli)",
-    speech: "Bira, keranjang buahku sangat berat... bisakah kamu membantuku?",
+    speech: "Bira, apakah kamu bisa membantuku mengangkat pot bunga ini?",
     signKey: "tolong",
     choices: [
-      { key: "samaSama", action: "Dua Telapak Terbuka Siap Membantu", desc: "Menyatakan siap menolong dengan lapang dada", correct: true },
-      { key: "maaf", action: "Kepalan Tangan di Dada (Maaf)", desc: "Menolak karena sedang sibuk", correct: false }
+      { key: "iya", action: "Ibu Jari Mengacung (Iya, Siap)", desc: "Menyatakan setuju dan siap membantu", correct: true },
+      { key: "sampaiJumpa", action: "Melambai Pergi (Dadah)", desc: "Meninggalkan teman yang butuh bantuan", correct: false },
+      { key: "maaf", action: "Kepalan Memutar (Maaf)", desc: "Meminta maaf karena tidak bisa", correct: false }
     ],
-    hint: "Tunjukkan kedua tangan terbuka (🤲) untuk menyatakan kesiapanmu membantu teman."
+    hint: "Beri tanda persetujuan dengan isyarat jempol atau anggukan mantap (Iya/Siap)."
   },
   {
     npc: "Kancil Kecil",
     speech: "Aduh, maafkan aku Bira! Aku tidak sengaja menyenggol bungamu.",
     signKey: "maaf",
     choices: [
-      { key: "samaSama", action: "Telapak Tangan Terbuka Lembut (Tidak Apa-apa)", desc: "Memaafkan dan memberi tahu bahwa semuanya baik-baik saja", correct: true },
-      { key: "tolong", action: "Menangkupkan Tangan (Tolong)", desc: "Meminta bantuan lain", correct: false }
+      { key: "samaSama", action: "Dua Tangan Terbuka Lembut (Tidak Apa-apa)", desc: "Memaafkan dengan lapang dada", correct: true },
+      { key: "tidak", action: "Menolak Keras (Tidak)", desc: "Menolak meminta maaf", correct: false },
+      { key: "tolong", action: "Menangkupkan Tangan (Tolong)", desc: "Minta tolong", correct: false }
     ],
-    hint: "Tanda memaafkan dilakukan dengan senyuman dan kedua telapak tangan terbuka (🤲)."
+    hint: "Memaafkan ditunjukkan dengan senyuman dan dua tangan terbuka (Tidak apa-apa)."
+  },
+  {
+    npc: "Ibu Kelinci",
+    speech: "Bira, apakah keranjang wortel ini milikmu yang tertinggal di kebun?",
+    signKey: "halo",
+    choices: [
+      { key: "tidak", action: "Menggoyangkan Telunjuk (Bukan Milikku)", desc: "Menyatakan bukan dengan jelas dan sopan", correct: true },
+      { key: "iya", action: "Mengacungkan Jempol (Iya)", desc: "Mengambil barang yang bukan miliknya", correct: false },
+      { key: "semangat", action: "Mengepalkan Tangan (Semangat)", desc: "Tidak sesuai konteks", correct: false }
+    ],
+    hint: "Goyangkan jari telunjuk ke kiri dan kanan untuk menyatakan 'Bukan / Tidak'."
+  },
+  {
+    npc: "Pak Bambu",
+    speech: "Hari ini kita akan membersihkan taman desa. Ayo Bira, kita pasti bisa!",
+    signKey: "semangat",
+    choices: [
+      { key: "semangat", action: "Kedua Tangan Mengepal Kuat (Semangat!)", desc: "Membangkitkan motivasi bersama", correct: true },
+      { key: "maaf", action: "Kepalan Memutar (Maaf)", desc: "Menyerah sebelum mencoba", correct: false },
+      { key: "sampaiJumpa", action: "Melambai Pergi", desc: "Pulang sendiri", correct: false }
+    ],
+    hint: "Kepalkan tangan dengan ekspresi berapi-api untuk isyarat 'Semangat'."
+  },
+  {
+    npc: "Bunga Melati",
+    speech: "Wah! Taman kita sekarang menjadi sangat indah dan bersih sekali!",
+    signKey: "senang",
+    choices: [
+      { key: "senang", action: "Mengusap Dada Tersenyum (Senang)", desc: "Mengekspresikan rasa gembira dan bahagia", correct: true },
+      { key: "tidak", action: "Menggeleng Telunjuk (Biasa Saja)", desc: "Mengacuhkan teman", correct: false },
+      { key: "tolong", action: "Menangkupkan Tangan", desc: "Minta tolong lagi", correct: false }
+    ],
+    hint: "Gerakan mengusap dada dengan senyum lebar melambangkan rasa 'Senang / Bahagia'."
+  },
+  {
+    npc: "Tupai Pohon",
+    speech: "Bira, ini ada bekal kacang kenari lezat khusus untukmu!",
+    signKey: "halo",
+    choices: [
+      { key: "terimaKasih", action: "Dagu Digerakkan Maju (Terima Kasih)", desc: "Menghargai pemberian orang lain", correct: true },
+      { key: "maaf", action: "Minta Maaf", desc: "Merasa bersalah", correct: false },
+      { key: "sampaiJumpa", action: "Melambai Pergi", desc: "Langsung pergi tanpa terima kasih", correct: false }
+    ],
+    hint: "Sentuh dagu dengan jari lalu arahkan ke depan untuk isyarat 'Terima Kasih'."
+  },
+  {
+    npc: "Kakek Ranting",
+    speech: "Matahari sudah mulai terbenam. Aku harus pulang ke rumah dulu ya Bira.",
+    signKey: "sampaiJumpa",
+    choices: [
+      { key: "sampaiJumpa", action: "Tangan Diangkat Melambai (Sampai Jumpa)", desc: "Mengucapkan salam perpisahan yang sopan", correct: true },
+      { key: "tolong", action: "Menangkupkan Tangan (Tolong)", desc: "Mencegah kakek pulang", correct: false },
+      { key: "tidak", action: "Menolak Kakek", desc: "Tidak sopan", correct: false }
+    ],
+    hint: "Angkat tangan dan lambaikan saat berpisah tanda 'Sampai Jumpa / Dadah'."
+  },
+  {
+    npc: "Kepala Desa",
+    speech: "Luar biasa Bira! Kamu telah belajar berkomunikasi dengan semua warga!",
+    signKey: "senang",
+    choices: [
+      { key: "terimaKasih", action: "Dagu Digerakkan Maju (Terima Kasih Banyak)", desc: "Bersyukur atas bimbingan kepala desa", correct: true },
+      { key: "tidak", action: "Tidak Mau", desc: "Kurang pantas", correct: false },
+      { key: "maaf", action: "Minta Maaf", desc: "Tidak perlu bersalah", correct: false }
+    ],
+    hint: "Ucapkan terima kasih atas apresiasi dari kepala desa."
   }
 ];
 
 let currentIndex = 0;
-let stars = 0;
+let scoreCount = 0;
+let currentCatFilter = "all";
 
+// Ganti Tab Antara Petualangan vs Kamus
+function switchTab(tab) {
+  document.querySelectorAll('.tab-view').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+
+  if (tab === 'quest') {
+    document.getElementById('quest-view').classList.add('active');
+    document.getElementById('nav-quest').classList.add('active');
+    document.getElementById('header-title').innerText = "🌱 BIRA: SIGN QUEST";
+    document.getElementById('progress-txt').style.display = "block";
+  } else {
+    document.getElementById('dictionary-view').classList.add('active');
+    document.getElementById('nav-dict').classList.add('active');
+    document.getElementById('header-title').innerText = "📖 KAMUS ISYARAT";
+    document.getElementById('progress-txt').style.display = "none";
+    renderDictionary();
+  }
+}
+
+// Render Kamus
+function renderDictionary() {
+  const container = document.getElementById("dict-grid-container");
+  const keyword = document.getElementById("dict-search").value.toLowerCase();
+  container.innerHTML = "";
+
+  const filtered = dictionaryData.filter(item => {
+    const matchCat = currentCatFilter === "all" || item.cat === currentCatFilter;
+    const matchKey = item.name.toLowerCase().includes(keyword) || item.desc.toLowerCase().includes(keyword);
+    return matchCat && matchKey;
+  });
+
+  if (filtered.length === 0) {
+    container.innerHTML = `<div style="grid-column: span 2; text-align:center; padding:30px; color:#888;">Kata isyarat tidak ditemukan.</div>`;
+    return;
+  }
+
+  filtered.forEach(item => {
+    const card = document.createElement("div");
+    card.className = "dict-card";
+    card.innerHTML = `
+      <div class="dict-icon">${item.icon}</div>
+      <div class="dict-name">${item.name}</div>
+      <div class="dict-category">${item.cat.toUpperCase()}</div>
+      <div class="dict-desc">${item.desc}</div>
+    `;
+    card.onclick = () => openDictModal(item);
+    container.appendChild(card);
+  });
+}
+
+function filterDictionary() {
+  renderDictionary();
+}
+
+function setCategory(cat, el) {
+  currentCatFilter = cat;
+  document.querySelectorAll(".filter-chip").forEach(c => c.classList.remove("active"));
+  el.classList.add("active");
+  renderDictionary();
+}
+
+function openDictModal(item) {
+  document.getElementById("dict-modal-title").innerText = item.name;
+  document.getElementById("dict-modal-icon").innerText = item.icon;
+  document.getElementById("dict-modal-body").innerText = `Posisi: ${item.body}`;
+  document.getElementById("dict-modal-desc").innerText = item.desc;
+  document.getElementById("dict-modal").style.display = "flex";
+}
+
+function closeDictModal() {
+  document.getElementById("dict-modal").style.display = "none";
+}
+
+// Render Soal Petualangan
 function drawAvatar(idx) {
   const el = document.getElementById("npc-avatar-svg");
-  if (idx === 0) {
-    el.innerHTML = `
-      <circle cx="60" cy="50" r="28" fill="#8bc34a" stroke="#558b2f" stroke-width="3"/>
-      <ellipse cx="60" cy="94" rx="32" ry="20" fill="#689f38"/>
-      <circle cx="50" cy="46" r="4" fill="#2e7d32"/><circle cx="70" cy="46" r="4" fill="#2e7d32"/>
-      <path d="M52,58 Q60,66 68,58" fill="none" stroke="#2e7d32" stroke-width="3" stroke-linecap="round"/>
-      <path d="M60,22 Q56,8 70,7" fill="none" stroke="#33691e" stroke-width="4"/>
-    `;
-  } else if (idx === 1) {
-    el.innerHTML = `
-      <circle cx="60" cy="48" r="26" fill="#a1887f" stroke="#5d4037" stroke-width="3"/>
-      <ellipse cx="60" cy="92" rx="28" ry="22" fill="#8d6e63"/>
-      <circle cx="52" cy="44" r="3" fill="#3e2723"/><circle cx="68" cy="44" r="3" fill="#3e2723"/>
-      <path d="M52,58 Q60,64 68,58" fill="none" stroke="#3e2723" stroke-width="3"/>
-      <path d="M42,20 L52,32 M78,18 L68,32" stroke="#4e342e" stroke-width="4" stroke-linecap="round"/>
-    `;
-  } else {
-    el.innerHTML = `
-      <circle cx="60" cy="48" r="26" fill="#fff59d" stroke="#fbc02d" stroke-width="3"/>
-      <ellipse cx="60" cy="92" rx="30" ry="22" fill="#fff9c4"/>
-      <circle cx="52" cy="44" r="4" fill="#e65100"/><circle cx="68" cy="44" r="4" fill="#e65100"/>
-      <path d="M52,56 Q60,64 68,56" fill="none" stroke="#e65100" stroke-width="3" stroke-linecap="round"/>
-      <circle cx="60" cy="18" r="9" fill="#ffb74d"/>
-    `;
-  }
+  const avatars = [
+    `<circle cx="60" cy="50" r="28" fill="#8bc34a" stroke="#558b2f" stroke-width="3"/><ellipse cx="60" cy="94" rx="32" ry="20" fill="#689f38"/><circle cx="50" cy="46" r="4" fill="#2e7d32"/><circle cx="70" cy="46" r="4" fill="#2e7d32"/><path d="M52,58 Q60,66 68,58" fill="none" stroke="#2e7d32" stroke-width="3" stroke-linecap="round"/><path d="M60,22 Q56,8 70,7" fill="none" stroke="#33691e" stroke-width="4"/>`,
+    `<circle cx="60" cy="48" r="26" fill="#a1887f" stroke="#5d4037" stroke-width="3"/><ellipse cx="60" cy="92" rx="28" ry="22" fill="#8d6e63"/><circle cx="52" cy="44" r="3" fill="#3e2723"/><circle cx="68" cy="44" r="3" fill="#3e2723"/><path d="M52,58 Q60,64 68,58" fill="none" stroke="#3e2723" stroke-width="3"/>`,
+    `<circle cx="60" cy="48" r="26" fill="#fff59d" stroke="#fbc02d" stroke-width="3"/><ellipse cx="60" cy="92" rx="30" ry="22" fill="#fff9c4"/><circle cx="52" cy="44" r="4" fill="#e65100"/><circle cx="68" cy="44" r="4" fill="#e65100"/><path d="M52,56 Q60,64 68,56" fill="none" stroke="#e65100" stroke-width="3" stroke-linecap="round"/><circle cx="60" cy="18" r="9" fill="#ffb74d"/>`
+  ];
+  el.innerHTML = avatars[idx % avatars.length];
 }
 
 function loadStep(idx) {
   const q = questDialogs[idx];
-  const signInfo = signCatalog[q.signKey];
+  const signInfo = dictionaryData.find(d => d.id === q.signKey) || dictionaryData[0];
 
+  document.getElementById("progress-txt").innerText = `Soal ${idx + 1} / ${questDialogs.length}`;
   document.getElementById("bubble-npc-name").innerText = q.npc;
   document.getElementById("bubble-text").innerText = `"${q.speech}"`;
-  document.getElementById("sign-icon").innerHTML = signInfo.html;
+  document.getElementById("sign-icon").innerText = signInfo.icon;
   document.getElementById("body-pos").innerText = `Posisi: ${signInfo.body}`;
-  document.getElementById("bubble-meaning").innerText = `Gerakan: ${signInfo.meaning}`;
+  document.getElementById("bubble-meaning").innerText = `Gerakan: ${signInfo.desc}`;
   drawAvatar(idx);
 
   const container = document.getElementById("options-container");
   container.innerHTML = "";
 
   q.choices.forEach(c => {
-    const optSign = signCatalog[c.key];
+    const optSign = dictionaryData.find(d => d.id === c.key) || dictionaryData[0];
     const btn = document.createElement("div");
     btn.className = "choice-btn";
     btn.innerHTML = `
-      <div class="choice-icon">${optSign.html}</div>
+      <div class="choice-icon">${optSign.icon}</div>
       <div class="choice-text">
         <span class="choice-action">${c.action}</span>
         <span class="choice-desc">${c.desc}</span>
       </div>
     `;
-    btn.onclick = () => selectChoice(c.correct, q.hint, optSign.html);
+    btn.onclick = () => selectChoice(c.correct, q.hint, optSign.icon);
     container.appendChild(btn);
   });
 }
 
-function selectChoice(isCorrect, hint, htmlIcon) {
-  if (navigator.vibrate) {
-    navigator.vibrate(isCorrect ? [80, 50, 80] : 200);
-  }
+function selectChoice(isCorrect, hint, icon) {
+  if (navigator.vibrate) navigator.vibrate(isCorrect ? [80, 50, 80] : 200);
 
   const modal = document.getElementById("feedback-banner");
   const title = document.getElementById("feedback-title");
   const desc = document.getElementById("feedback-desc");
   const iconBox = document.getElementById("feedback-icon");
 
-  iconBox.innerHTML = htmlIcon;
+  iconBox.innerText = icon;
 
   if (isCorrect) {
-    stars += 1;
-    document.getElementById("star-count").innerText = `⭐ ${stars} Bintang`;
+    scoreCount += 1;
     title.innerText = "Tepat Sekali! 🌟";
     title.style.color = "#2e7d32";
-    desc.innerText = "Pilihan isyarat tanganmu sangat pas dengan percakapan.";
+    desc.innerText = "Isyarat tanganmu sangat tepat untuk merespon percakapan ini.";
   } else {
     title.innerText = "Coba Perhatikan Lagi 🤔";
     title.style.color = "#d84315";
@@ -404,16 +668,17 @@ function nextQuestion() {
     loadStep(currentIndex);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   } else {
-    alert(`🎉 Selamat! Kamu telah menyelesaikan petualangan dengan total ${stars} Bintang!`);
+    alert(`🎉 LUAR BIASA! Kamu telah menyelesaikan seluruh petualangan dengan skor ${scoreCount} Bintang!`);
     currentIndex = 0;
-    stars = 0;
-    document.getElementById("star-count").innerText = `⭐ 0 Bintang`;
+    scoreCount = 0;
     loadStep(0);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 }
 
+// Inisialisasi awal
 loadStep(0);
+renderDictionary();
 </script>
 </body>
 </html>
