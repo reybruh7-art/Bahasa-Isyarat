@@ -7,16 +7,14 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
   
-  /* Izinkan scroll vertikal alami */
   body, html {
     width: 100%;
     min-height: 100%;
-    background: #e8f5e9;
+    background: #eef7ee;
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     color: #2e3d30;
     overflow-x: hidden;
     overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
   }
 
   #app {
@@ -27,10 +25,9 @@
     min-height: 100vh;
     margin: 0 auto;
     background: #ffffff;
-    box-shadow: 0 0 20px rgba(0,0,0,0.08);
+    box-shadow: 0 0 20px rgba(0,0,0,0.06);
   }
 
-  /* Header Sticky */
   #header {
     position: sticky;
     top: 0;
@@ -42,97 +39,120 @@
     color: #fff;
     font-weight: 800;
     font-size: 15px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
     z-index: 30;
   }
   .star-badge { background: #1b5e20; padding: 5px 12px; border-radius: 20px; font-size: 13px; color: #ffeb3b; }
 
-  /* Scene & Karakter */
   #scene {
     background: linear-gradient(180deg, #d4edda 0%, #c3e6cb 65%, #a8d5ba 100%);
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 16px 16px 12px;
+    padding: 16px;
   }
 
-  /* Balon Isyarat NPC */
   #speech-bubble {
     width: 100%;
     background: #ffffff;
-    border-radius: 20px;
-    padding: 16px;
-    box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+    border-radius: 22px;
+    padding: 18px 16px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
     border: 2.5px solid #43a047;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
   }
-  #bubble-npc-name { font-size: 13px; font-weight: 800; color: #2e7d32; text-transform: uppercase; margin-bottom: 4px; }
-  #bubble-text { font-size: 15px; font-weight: 700; color: #333; margin-bottom: 10px; line-height: 1.35; }
-  
-  #sign-illustration-box {
-    width: 125px;
-    height: 125px;
-    background: #f9fbe7;
-    border-radius: 18px;
-    border: 2px dashed #8bc34a;
+  #bubble-npc-name { font-size: 12px; font-weight: 800; color: #2e7d32; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 4px; }
+  #bubble-text { font-size: 15px; font-weight: 700; color: #2b2b2b; margin-bottom: 12px; line-height: 1.4; }
+
+  /* Kartu Ilustrasi Isyarat Utama */
+  #sign-card {
+    width: 145px;
+    height: 145px;
+    background: #f1f8e9;
+    border-radius: 20px;
+    border: 2px solid #81c784;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.04);
+    position: relative;
   }
-  #bubble-meaning { font-size: 12px; color: #555; font-style: italic; background: #e8f5e9; padding: 5px 12px; border-radius: 14px; }
+  .sign-icon-large { font-size: 68px; line-height: 1; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15)); }
+  .body-indicator {
+    position: absolute;
+    bottom: 6px;
+    background: #33691e;
+    color: white;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+
+  #bubble-meaning {
+    font-size: 12px;
+    color: #444;
+    font-weight: 600;
+    background: #e8f5e9;
+    padding: 6px 14px;
+    border-radius: 14px;
+    border: 1px solid #c8e6c9;
+  }
 
   #character-stage {
-    width: 120px;
-    height: 120px;
+    width: 100px;
+    height: 100px;
     display: flex;
     justify-content: center;
     align-items: center;
   }
 
-  /* Panel Pilihan Jawaban */
+  /* Pilihan Respon */
   #dialog-panel {
     background: #ffffff;
     padding: 16px;
     display: flex;
     flex-direction: column;
     gap: 12px;
-    padding-bottom: 30px;
+    padding-bottom: 35px;
   }
-  .prompt-label { font-size: 14px; font-weight: 800; color: #444; text-align: center; margin-bottom: 4px; }
+  .prompt-label { font-size: 14px; font-weight: 800; color: #333; text-align: center; margin-bottom: 4px; }
 
   .choice-btn {
     display: flex;
     align-items: center;
     gap: 14px;
     padding: 12px 14px;
-    background: #fbfdfb;
+    background: #fafdfa;
     border: 2px solid #c8e6c9;
-    border-radius: 16px;
+    border-radius: 18px;
     cursor: pointer;
     box-shadow: 0 2px 6px rgba(0,0,0,0.04);
   }
   .choice-btn:active { background: #e8f5e9; border-color: #4caf50; transform: scale(0.98); }
   .choice-icon {
-    width: 58px;
-    height: 58px;
-    background: #ffffff;
-    border-radius: 14px;
+    width: 60px;
+    height: 60px;
+    background: #f1f8e9;
+    border-radius: 15px;
     border: 1.5px solid #a5d6a7;
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 34px;
     flex-shrink: 0;
   }
   .choice-text { flex: 1; }
   .choice-action { font-size: 14px; font-weight: 800; color: #2e7d32; display: block; margin-bottom: 3px; }
-  .choice-desc { font-size: 12px; color: #666; line-height: 1.25; }
+  .choice-desc { font-size: 12px; color: #666; line-height: 1.3; }
 
-  /* Modal Feedback */
+  /* Modal Hasil */
   #feedback-banner {
     position: fixed; inset: 0; background: rgba(0,0,0,0.65); backdrop-filter: blur(4px);
     display: none; justify-content: center; align-items: center; padding: 20px; z-index: 50;
@@ -141,7 +161,8 @@
     background: white; border-radius: 24px; padding: 24px 20px; text-align: center;
     max-width: 320px; width: 100%; box-shadow: 0 15px 30px rgba(0,0,0,0.25);
   }
-  .feedback-card h3 { font-size: 20px; margin-bottom: 8px; }
+  .feedback-card h3 { font-size: 20px; margin-bottom: 6px; }
+  .feedback-icon { font-size: 52px; margin: 10px 0; }
   .feedback-card p { font-size: 14px; color: #555; margin-bottom: 16px; line-height: 1.4; }
   .feedback-btn {
     width: 100%; padding: 13px; border-radius: 16px; border: none; font-size: 15px;
@@ -159,16 +180,20 @@
 
   <div id="scene">
     <div id="speech-bubble">
-      <div id="bubble-npc-name">Pak Bambu (Warga Desa)</div>
-      <div id="bubble-text">"Selamat pagi! Cuaca hari ini cerah ya."</div>
-      <div id="sign-illustration-box">
-        <svg id="npc-sign-svg" width="95" height="95" viewBox="0 0 120 120"></svg>
+      <div id="bubble-npc-name">Pak Bambu</div>
+      <div id="bubble-text">"Selamat pagi! Senang bertemu denganmu."</div>
+      
+      <!-- Kartu Isyarat Jelas -->
+      <div id="sign-card">
+        <div id="sign-icon" class="sign-icon-large">👋</div>
+        <div id="body-pos" class="body-indicator">Posisi: Di Depan Wajah</div>
       </div>
-      <div id="bubble-meaning">Gerakan: Telapak terbuka melambai (Halo)</div>
+      
+      <div id="bubble-meaning">Gerakan: Melambaikan tangan terbuka (Halo)</div>
     </div>
 
     <div id="character-stage">
-      <svg id="npc-avatar-svg" width="100" height="100" viewBox="0 0 120 120"></svg>
+      <svg id="npc-avatar-svg" width="90" height="90" viewBox="0 0 120 120"></svg>
     </div>
   </div>
 
@@ -180,125 +205,83 @@
 
 <div id="feedback-banner">
   <div class="feedback-card">
-    <h3 id="feedback-title">Hebat Sekali! 🎉</h3>
-    <div id="feedback-svg-box" style="margin: 12px auto; width: 85px; height: 85px;"></div>
-    <p id="feedback-desc">Kamu membalas salam dengan benar.</p>
+    <h3 id="feedback-title">Tepat Sekali! 🌟</h3>
+    <div id="feedback-icon" class="feedback-icon">👋</div>
+    <p id="feedback-desc">Kamu membalas sapaan dengan benar.</p>
     <button class="feedback-btn" onclick="nextQuestion()">LANJUTKAN</button>
   </div>
 </div>
 
 <script>
-// --- Vektor Gambar Bahasa Isyarat Jelas & Berbeda Kontras ---
-const signSVGs = {
-  // 1. HALO (Telapak tangan terbuka 5 jari tegak lurus melambai)
-  halo: `
-    <g transform="translate(10, 5)">
-      <path d="M50,95 C40,95 38,80 38,65 L38,45 C38,40 43,40 43,45 L43,62 L45,30 C45,25 50,25 50,30 L50,60 L52,22 C52,17 57,17 57,22 L57,60 L59,28 C59,23 64,23 64,28 L64,62 L66,38 C66,33 71,33 71,38 L71,68 C71,85 62,95 50,95 Z" fill="#ffb74d" stroke="#e65100" stroke-width="3.5"/>
-      <path d="M28,60 C26,52 30,48 35,52 L40,65" fill="#ffb74d" stroke="#e65100" stroke-width="3"/>
-      <!-- Gelombang Lambaian -->
-      <path d="M78,35 Q86,45 78,55" fill="none" stroke="#2e7d32" stroke-width="3" stroke-linecap="round"/>
-      <path d="M84,30 Q94,45 84,60" fill="none" stroke="#2e7d32" stroke-width="3" stroke-linecap="round"/>
-    </g>
-  `,
-
-  // 2. MAAF (Tangan mengepal rapat memutar di dada dengan panah rotasi)
-  maaf: `
-    <g transform="translate(10, 5)">
-      <!-- Kepalan tangan -->
-      <circle cx="50" cy="55" r="26" fill="#ffb74d" stroke="#e65100" stroke-width="3.5"/>
-      <path d="M35,46 Q50,42 65,46 M33,55 Q50,51 67,55 M35,64 Q50,60 65,64" stroke="#d84315" stroke-width="3" stroke-linecap="round"/>
-      <ellipse cx="40" cy="62" rx="7" ry="11" fill="#ffa726" stroke="#e65100" stroke-width="2.5"/>
-      <!-- Panah Memutar Simbol Maaf -->
-      <path d="M20,55 A32,32 0 1,1 55,87" fill="none" stroke="#1565c0" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="5,4"/>
-      <polygon points="53,82 62,88 51,94" fill="#1565c0"/>
-    </g>
-  `,
-
-  // 3. TERIMA KASIH (Jari-jari datar menyentuh dagu lalu bergerak ke depan)
-  terimaKasih: `
-    <g transform="translate(5, 5)">
-      <!-- Kepala/Dagu profil samping -->
-      <path d="M20,25 Q35,25 35,45 Q35,65 20,65" fill="none" stroke="#b0bec5" stroke-width="3" stroke-linecap="round"/>
-      <!-- Tangan datar terbuka -->
-      <rect x="38" y="45" width="46" height="20" rx="9" fill="#ffb74d" stroke="#e65100" stroke-width="3.5"/>
-      <path d="M84,49 L94,49 M84,55 L96,55 M84,61 L93,61" stroke="#e65100" stroke-width="3"/>
-      <!-- Panah Maju ke Depan -->
-      <path d="M48,32 L78,32" fill="none" stroke="#2e7d32" stroke-width="3.5" stroke-linecap="round"/>
-      <polygon points="76,26 86,32 76,38" fill="#2e7d32"/>
-    </g>
-  `,
-
-  // 4. SAMA-SAMA / SENANG MEMBANTU (Dua tangan terbuka berdampingan menghadap ke atas)
-  samaSama: `
-    <g transform="translate(5, 10)">
-      <!-- Tangan Kiri -->
-      <ellipse cx="38" cy="55" rx="18" ry="24" fill="#ffb74d" stroke="#e65100" stroke-width="3" transform="rotate(-15 38 55)"/>
-      <path d="M28,45 L26,32 M34,42 L34,26 M40,43 L42,28 M46,46 L50,34" stroke="#e65100" stroke-width="2.5" stroke-linecap="round"/>
-      <!-- Tangan Kanan -->
-      <ellipse cx="68" cy="55" rx="18" ry="24" fill="#ffb74d" stroke="#e65100" stroke-width="3" transform="rotate(15 68 55)"/>
-      <path d="M60,46 L56,34 M66,43 L64,28 M72,42 L72,26 M78,45 L80,32" stroke="#e65100" stroke-width="2.5" stroke-linecap="round"/>
-      <!-- Garis Hangat -->
-      <path d="M38,85 Q53,92 68,85" fill="none" stroke="#f57c00" stroke-width="3" stroke-linecap="round"/>
-    </g>
-  `,
-
-  // 5. TOLONG (Dua telapak tangan menangkup rapat tanda memohon)
-  tolong: `
-    <g transform="translate(10, 5)">
-      <!-- Dua telapak tangan menangkup rapat simetris -->
-      <path d="M44,85 L44,35 Q50,22 56,35 L56,85 Z" fill="#ffb74d" stroke="#e65100" stroke-width="3.5"/>
-      <path d="M36,82 L36,46 Q40,36 44,46 L44,82 Z" fill="#ffa726" stroke="#e65100" stroke-width="3"/>
-      <path d="M64,82 L64,46 Q60,36 56,46 L56,82 Z" fill="#ffa726" stroke="#e65100" stroke-width="3"/>
-      <!-- Simbol Hati Bantuan -->
-      <path d="M50,15 C46,9 38,11 38,18 C38,25 50,30 50,30 C50,30 62,25 62,18 C62,11 54,9 50,15 Z" fill="#e53935"/>
-    </g>
-  `
+// Data Bank Bahasa Isyarat Jelas & Terstandar
+const signCatalog = {
+  halo: {
+    icon: "👋",
+    body: "Depan Wajah",
+    meaning: "Melambaikan 5 jari terbuka (Halo / Salam)"
+  },
+  maaf: {
+    icon: "✊🔄",
+    body: "Di Depan Dada",
+    meaning: "Mengepalkan tangan memutar di dada (Minta Maaf)"
+  },
+  terimaKasih: {
+    icon: "🫲➡️",
+    body: "Dagu ke Depan",
+    meaning: "Ujung jari menyentuh dagu lalu diarahkan maju (Terima Kasih)"
+  },
+  samaSama: {
+    icon: "🤲",
+    body: "Dua Tangan Terbuka",
+    meaning: "Membuka kedua telapak tangan ke atas (Sama-sama / Lapang Dada)"
+  },
+  tolong: {
+    icon: "🙏",
+    body: "Depan Dada",
+    meaning: "Menangkupkan kedua telapak tangan rapat (Meminta Tolong)"
+  }
 };
 
 const questDialogs = [
   {
     npc: "Pak Bambu (Warga Desa)",
     speech: "Selamat pagi! Cuaca di lembah hari ini sangat cerah ya.",
-    signMeaning: "Telapak tangan terbuka melambai (Halo)",
     signKey: "halo",
     choices: [
       { key: "halo", action: "Balas Sapaan (Halo / Selamat Pagi)", desc: "Melambaikan 5 jari tangan terbuka dengan ramah", correct: true },
-      { key: "maaf", action: "Mengepal Tangan Memutar (Maaf)", desc: "Menunjukkan rasa bersalah dan memohon maaf", correct: false }
+      { key: "maaf", action: "Kepalan Tangan Memutar (Maaf)", desc: "Menunjukkan rasa bersalah dan memohon maaf", correct: false }
     ],
-    hint: "Saat orang lain menyapa ramah, balaslah dengan lambaian telapak tangan terbuka (Halo)."
+    hint: "Saat disapa dengan ramah, balaslah dengan lambaian tangan terbuka (👋)."
   },
   {
     npc: "Kakek Ranting",
     speech: "Wah, terima kasih banyak ya Bira sudah membantuku memetik buah!",
-    signMeaning: "Tangan dari dagu terarah ke depan (Terima Kasih)",
     signKey: "terimaKasih",
     choices: [
-      { key: "tolong", action: "Menangkupkan Dua Tangan (Tolong)", desc: "Menangkup tangan tanda meminta bantuan", correct: false },
-      { key: "samaSama", action: "Dua Tangan Terbuka (Sama-sama)", desc: "Menyambut rasa terima kasih dengan kedua tangan terbuka", correct: true }
+      { key: "tolong", action: "Menangkupkan Dua Telapak (Tolong)", desc: "Meminta bantuan orang lain", correct: false },
+      { key: "samaSama", action: "Kedua Telapak Terbuka (Sama-sama)", desc: "Menyambut ucapan terima kasih dengan ikhlas", correct: true }
     ],
-    hint: "Gunakan isyarat dua tangan terbuka ke depan sebagai tanda 'Sama-sama / Senang Membantu'."
+    hint: "Buka kedua telapak tangan menghadap ke atas (🤲) sebagai tanda 'Sama-sama'."
   },
   {
     npc: "Bunga Melati (Teman Tuli)",
     speech: "Bira, keranjang buahku sangat berat... bisakah kamu membantuku?",
-    signMeaning: "Dua telapak tangan menangkup memohon (Tolong)",
     signKey: "tolong",
     choices: [
-      { key: "samaSama", action: "Dua Tangan Terbuka Siap Membantu", desc: "Membuka tangan tanda siap menolong", correct: true },
-      { key: "maaf", action: "Kepalan Tangan di Dada (Maaf)", desc: "Menolak karena sedang tidak bisa", correct: false }
+      { key: "samaSama", action: "Dua Telapak Terbuka Siap Membantu", desc: "Menyatakan siap menolong dengan lapang dada", correct: true },
+      { key: "maaf", action: "Kepalan Tangan di Dada (Maaf)", desc: "Menolak karena sedang sibuk", correct: false }
     ],
-    hint: "Buka kedua tanganmu ke depan untuk menyatakan kesiapanmu membantu teman."
+    hint: "Tunjukkan kedua tangan terbuka (🤲) untuk menyatakan kesiapanmu membantu teman."
   },
   {
     npc: "Kancil Kecil",
     speech: "Aduh, maafkan aku Bira! Aku tidak sengaja menyenggol bungamu.",
-    signMeaning: "Tangan mengepal memutar di dada (Meminta Maaf)",
     signKey: "maaf",
     choices: [
-      { key: "samaSama", action: "Tangan Terbuka Lembut (Tidak Apa-apa)", desc: "Memaafkan dan memberi tahu bahwa semua baik-baik saja", correct: true },
-      { key: "tolong", action: "Menangkup Tangan Memohon (Tolong)", desc: "Meminta bantuan lain", correct: false }
+      { key: "samaSama", action: "Telapak Tangan Terbuka Lembut (Tidak Apa-apa)", desc: "Memaafkan dan memberi tahu bahwa semuanya baik-baik saja", correct: true },
+      { key: "tolong", action: "Menangkupkan Tangan (Tolong)", desc: "Meminta bantuan lain", correct: false }
     ],
-    hint: "Tanda memaafkan ditunjukkan dengan senyuman dan kedua tangan terbuka santai."
+    hint: "Tanda memaafkan dilakukan dengan senyuman dan kedua telapak tangan terbuka (🤲)."
   }
 ];
 
@@ -309,24 +292,24 @@ function drawAvatar(idx) {
   const el = document.getElementById("npc-avatar-svg");
   if (idx === 0) {
     el.innerHTML = `
-      <circle cx="60" cy="50" r="30" fill="#8bc34a" stroke="#558b2f" stroke-width="3"/>
-      <ellipse cx="60" cy="98" rx="34" ry="22" fill="#689f38"/>
+      <circle cx="60" cy="50" r="28" fill="#8bc34a" stroke="#558b2f" stroke-width="3"/>
+      <ellipse cx="60" cy="94" rx="32" ry="20" fill="#689f38"/>
       <circle cx="50" cy="46" r="4" fill="#2e7d32"/><circle cx="70" cy="46" r="4" fill="#2e7d32"/>
       <path d="M52,58 Q60,66 68,58" fill="none" stroke="#2e7d32" stroke-width="3" stroke-linecap="round"/>
-      <path d="M60,20 Q56,6 70,5" fill="none" stroke="#33691e" stroke-width="4"/>
+      <path d="M60,22 Q56,8 70,7" fill="none" stroke="#33691e" stroke-width="4"/>
     `;
   } else if (idx === 1) {
     el.innerHTML = `
-      <circle cx="60" cy="48" r="28" fill="#a1887f" stroke="#5d4037" stroke-width="3"/>
-      <ellipse cx="60" cy="95" rx="30" ry="24" fill="#8d6e63"/>
+      <circle cx="60" cy="48" r="26" fill="#a1887f" stroke="#5d4037" stroke-width="3"/>
+      <ellipse cx="60" cy="92" rx="28" ry="22" fill="#8d6e63"/>
       <circle cx="52" cy="44" r="3" fill="#3e2723"/><circle cx="68" cy="44" r="3" fill="#3e2723"/>
       <path d="M52,58 Q60,64 68,58" fill="none" stroke="#3e2723" stroke-width="3"/>
       <path d="M42,20 L52,32 M78,18 L68,32" stroke="#4e342e" stroke-width="4" stroke-linecap="round"/>
     `;
   } else {
     el.innerHTML = `
-      <circle cx="60" cy="48" r="28" fill="#fff59d" stroke="#fbc02d" stroke-width="3"/>
-      <ellipse cx="60" cy="95" rx="32" ry="24" fill="#fff9c4"/>
+      <circle cx="60" cy="48" r="26" fill="#fff59d" stroke="#fbc02d" stroke-width="3"/>
+      <ellipse cx="60" cy="92" rx="30" ry="22" fill="#fff9c4"/>
       <circle cx="52" cy="44" r="4" fill="#e65100"/><circle cx="68" cy="44" r="4" fill="#e65100"/>
       <path d="M52,56 Q60,64 68,56" fill="none" stroke="#e65100" stroke-width="3" stroke-linecap="round"/>
       <circle cx="60" cy="18" r="9" fill="#ffb74d"/>
@@ -336,33 +319,35 @@ function drawAvatar(idx) {
 
 function loadStep(idx) {
   const q = questDialogs[idx];
+  const signInfo = signCatalog[q.signKey];
+
   document.getElementById("bubble-npc-name").innerText = q.npc;
   document.getElementById("bubble-text").innerText = `"${q.speech}"`;
-  document.getElementById("bubble-meaning").innerText = `Gerakan: ${q.signMeaning}`;
-  document.getElementById("npc-sign-svg").innerHTML = signSVGs[q.signKey] || "";
+  document.getElementById("sign-icon").innerText = signInfo.icon;
+  document.getElementById("body-pos").innerText = `Posisi: ${signInfo.body}`;
+  document.getElementById("bubble-meaning").innerText = `Gerakan: ${signInfo.meaning}`;
   drawAvatar(idx);
 
   const container = document.getElementById("options-container");
   container.innerHTML = "";
 
   q.choices.forEach(c => {
+    const optSign = signCatalog[c.key];
     const btn = document.createElement("div");
     btn.className = "choice-btn";
     btn.innerHTML = `
-      <div class="choice-icon">
-        <svg width="46" height="46" viewBox="0 0 120 120">${signSVGs[c.key] || ""}</svg>
-      </div>
+      <div class="choice-icon">${optSign.icon}</div>
       <div class="choice-text">
         <span class="choice-action">${c.action}</span>
         <span class="choice-desc">${c.desc}</span>
       </div>
     `;
-    btn.onclick = () => selectChoice(c.correct, q.hint, c.key);
+    btn.onclick = () => selectChoice(c.correct, q.hint, optSign.icon);
     container.appendChild(btn);
   });
 }
 
-function selectChoice(isCorrect, hint, key) {
+function selectChoice(isCorrect, hint, icon) {
   if (navigator.vibrate) {
     navigator.vibrate(isCorrect ? [80, 50, 80] : 200);
   }
@@ -370,9 +355,9 @@ function selectChoice(isCorrect, hint, key) {
   const modal = document.getElementById("feedback-banner");
   const title = document.getElementById("feedback-title");
   const desc = document.getElementById("feedback-desc");
-  const svgBox = document.getElementById("feedback-svg-box");
+  const iconBox = document.getElementById("feedback-icon");
 
-  svgBox.innerHTML = `<svg width="85" height="85" viewBox="0 0 120 120">${signSVGs[key] || ""}</svg>`;
+  iconBox.innerText = icon;
 
   if (isCorrect) {
     stars += 1;
@@ -405,7 +390,6 @@ function nextQuestion() {
   }
 }
 
-// Mulai
 loadStep(0);
 </script>
 </body>
